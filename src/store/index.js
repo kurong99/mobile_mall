@@ -20,24 +20,30 @@ export default new Vuex.Store({
   state: {
     // 登录状态
     isLogin: false,
+    userinfo: {},
     // 购物车数据
-    cart: []
-  },
-  getters: {
-    cart: (state) => {
-      return state.cart
-    },
-    goodCount: (state) => {
-      return state.count
-    },
-    message: (state) => {
-      return state.message
-    },
-    isLogin: (state) => {
-      return state.isLogin
+    cart: [],
+    orders: {
+      orderList: [],
+      payment: 0
     }
   },
+  getters: {
+    cart: (state) => state.cart,
+    goodCount: (state) => state.count,
+    message: (state) => state.message,
+    isLogin: (state) => state.isLogin,
+    info: (state) => state.userinfo
+  },
   mutations: {
+    // 更改登录状态
+    login (state, flag) {
+      state.isLogin = flag
+    },
+    // 保存登录信息
+    setUserInfo (state, res) {
+      state.userinfo = res
+    },
     changeCart (state, res) {
       const { data, code } = res
       // 如果存在，则增加其数量；如果不存在，则将新商品添加到购物车
@@ -66,6 +72,7 @@ export default new Vuex.Store({
     },
     // 在购物车中删除选中商品
     delete (state, good) {
+      if (!good) return
       const targetIndex = findNum(state.cart, good)
       // 判断删除的单个商品还是多个商品
       if (Array.isArray(good)) {
@@ -82,6 +89,13 @@ export default new Vuex.Store({
         // splice会改变原数组 并返回删除的元素
         state.cart.splice(targetIndex, 1)
       }
+    },
+    // 保存订单信息
+    generateOrder (state, goodsInfo) {
+      const { goods, price } = goodsInfo
+      // 带上商品总价格
+      state.orders.payment = price
+      state.orders.orderList.push(...goods)
     }
   },
   actions: {

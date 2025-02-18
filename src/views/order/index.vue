@@ -11,7 +11,7 @@
     <div class="order_nav">
       <van-tabs color='rgb(245, 131, 49)' v-model="active">
         <van-tab v-for="(list,index) in navList" :key="index" :title="list.title">
-          <OrderItems v-if="list.hasContent" />
+          <OrderItems v-if="list.hasContent" :orderList="orders"/>
           <BlankPage v-else />
         </van-tab>
       </van-tabs>
@@ -30,6 +30,18 @@ export default {
     OrderItems,
     BlankPage
   },
+  created () {
+    this.orders = this.$store.state.orders.orderList
+    if (this.orders.length !== 0) {
+      this.navList.forEach(item => {
+        if (item.title === '全部' || item.title === '待发货') {
+          item.hasContent = true
+        }
+      })
+    } else {
+      this.navList[0].hasContent = false
+    }
+  },
   data () {
     return {
       active: 0,
@@ -44,7 +56,7 @@ export default {
         },
         {
           title: '待发货',
-          hasContent: true
+          hasContent: false
         },
         {
           title: '待收货',
@@ -54,12 +66,14 @@ export default {
           title: '待评价',
           hasContent: false
         }
-      ]
+      ],
+      orders: []
     }
   },
   methods: {
     onClickLeft () {
-      console.log(11)
+      // 返回首页
+      this.$router.push('/home')
     }
   }
 }
@@ -68,7 +82,7 @@ export default {
 <style scoped>
 
 .order {
-  height: 812px;
+  height: 100%;
   background-color: whitesmoke;
 }
 

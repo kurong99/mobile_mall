@@ -94,7 +94,7 @@
         <van-goods-action-icon icon="wap-home-o" text="首页" color="#ee0a24" @click="backHome" />
         <van-goods-action-icon icon="cart-o" text="购物车" @click="toCart" />
         <van-goods-action-button type="warning" @click="showCart" text="加入购物车" />
-        <van-goods-action-button type="danger" text="立即购买" />
+        <van-goods-action-button type="danger" @click="buyNow"  text="立即购买" />
       </van-goods-action>
     </div>
   </div>
@@ -169,6 +169,26 @@ export default {
         this.count = Math.max(this.count - 1, minCount)
       }
     },
+    //  检查是否登录
+    checkLogin () {
+      let timeId
+      // 未登录跳转到登录页面
+      this.$toast('您还未登录，即将跳转登录')
+      // 延迟跳转
+      this.$router.beforeEach((to, from, next) => {
+        if (from.name === 'detail' && to.name === 'login') {
+          if (timeId) {
+            clearTimeout(timeId)
+          }
+          timeId = setTimeout(() => {
+            next()
+          }, 1000)
+        } else {
+          next()
+        }
+      })
+      this.$router.push({ name: 'login' })
+    },
     // 添加该商品到购物车
     async add_cart () {
       // 检查当前登录状态
@@ -182,23 +202,17 @@ export default {
         // 库存减少 更新显示
         this.product.nums -= this.count
       } else {
-        let timeId
-        // 未登录跳转到登录页面
-        this.$toast('您还未登录，即将跳转登录')
-        // 延迟跳转
-        this.$router.beforeEach((to, from, next) => {
-          if (from.name === 'detail' && to.name === 'login') {
-            if (timeId) {
-              clearTimeout(timeId)
-            }
-            timeId = setTimeout(() => {
-              next()
-            }, 1000)
-          } else {
-            next()
-          }
-        })
-        this.$router.push({ name: 'login' })
+        this.checkLogin()
+      }
+    },
+    // 立即购买
+    buyNow () {
+      if (this.isLogin) {
+        const selectedItems = []
+        selectedItems.push(this.product)
+        this.$router.push({ name: 'pay', params: { selectedItems } })
+      } else {
+        this.checkLogin()
       }
     },
     //  返回首页

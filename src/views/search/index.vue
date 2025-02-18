@@ -86,7 +86,6 @@ export default {
       const value = this.value
       this.beforeValue.push(value)
       this.beforeValue = Array.from(new Set(this.beforeValue))
-      console.log(value)
     }
   }
 }

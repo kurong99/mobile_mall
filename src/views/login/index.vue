@@ -16,6 +16,7 @@
           label="用户名"
           placeholder="用户名"
           :rules="[{ required: true, message: '请填写用户名' }]"
+          autocomplete="on"
         />
         <van-field
           v-model="password"
@@ -24,6 +25,7 @@
           label="密码"
           placeholder="密码"
           :rules="[{ required: true, message: '请填写密码' }]"
+          autocomplete="on"
         />
         <div style="margin: 16px;">
           <van-button round block type="info" color='orange' native-type="submit">提交</van-button>
@@ -32,24 +34,39 @@
     </div>
   </div>
 </template>
-
 <script>
+
+import { mapGetters } from 'vuex'
+import { httpPost } from '@/untils/request'
+
 export default {
   name: 'LoginIndex',
   data () {
     return {
       username: '',
-      password: ''
+      password: '',
+      timeId: null
     }
   },
   methods: {
-    onSubmit () {
-      if (this.username === 'teng' && this.password === '123456') {
-        this.$toast('登录成功')
-        this.$store.state.isLogin = true
-        this.$router.push({ path: '/user', query: { username: this.username } })
-      }
+    async onSubmit () {
+      const { message, info } = await httpPost('/login', { name: this.username, password: this.password })
+      this.$toast(message)
+      // 更改登录状态
+      this.$store.commit('login', true)
+      // 将用户信息保存
+      this.$store.commit('setUserInfo', info)
+      // 返回上级页面
+      this.timeId = setTimeout(() => {
+        this.$router.back()
+      }, 1000)
     }
+  },
+  computed: {
+    ...mapGetters(['isLogin'])
+  },
+  beforeDestroy () {
+    this.timeId = null
   }
 }
 </script>

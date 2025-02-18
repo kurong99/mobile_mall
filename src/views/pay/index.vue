@@ -14,8 +14,8 @@
           <van-icon size='25' name="location-o" />
         </div>
         <div class="address_text">
-          <span class="name">{{ currentContact.name }} | {{ currentContact.tel }}</span>
-          <span class="address">{{ currentContact.address }}</span>
+          <span class="name">{{ userInfo.name }} | {{ userInfo.phone }}</span>
+          <span class="address">{{ userInfo.address }}</span>
         </div>
       </div>
       <div class="edit_address">
@@ -43,8 +43,8 @@
         <span style="color: rgb(245, 66, 12);">￥{{ totalPrice }}</span>
       </div>
       <div class="order_info">
-        <p>优惠券：</p>
-        <span>暂无优惠券可用</span>
+        <p>优惠：</p>
+        <span style="color: rgb(245, 66, 12);">- ￥{{ userInfo.coupon }}</span>
       </div>
       <div class="order_info">
         <p>配送费：</p>
@@ -58,7 +58,7 @@
       <div class="order_info">
         <p>
           <van-icon color='rgb(255, 94, 0)' name="gold-coin" />
-          余额支付（可用￥543654元）
+          余额支付（可用￥{{ userInfo.balance }}元）
         </p>
         <van-icon color='rgb(255, 94, 0)' name="success" />
       </div>
@@ -80,29 +80,29 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'PayIndex',
   created () {
     this.buyGoods = this.$route.params.selectedItems
+    this.userInfo = this.info
   },
   data () {
     return {
+      timeId: null,
       buyGoods: [],
-      delivery: 2,
-      coupon: 0,
-      currentContact: {
-        name: 'teng',
-        tel: '12324353985',
-        address: '湖北省武汉市江夏区豹澥街道未来科技城E1 4F'
-      }
+      userInfo: {},
+      delivery: 3
     }
   },
   computed: {
+    ...mapGetters(['info']),
     totalPrice () {
       return this.buyGoods.reduce((acc, cur) => acc + cur.price * cur.count, 0).toFixed(2)
     },
     payment () {
-      return (+this.totalPrice + this.delivery - this.coupon).toFixed(2)
+      return (+this.totalPrice + this.delivery - this.userInfo.coupon).toFixed(2)
     }
   },
   methods: {
@@ -112,12 +112,26 @@ export default {
     },
     // 修改地址
     onEdit () {
-      console.log(323)
+      this.$toast('暂未开放，敬请期待！')
     },
     // 支付订单
     payOrder () {
-      console.log(55)
+      // 支付加载提示
+      this.$toast.loading({
+        message: '支付中...',
+        forbidClick: false
+      })
+      // 支付后删除购物车中对应商品
+      this.$store.commit('delete', this.buyGoods)
+      // 生成订单保存 跳转到订单页面
+      this.$store.commit('generateOrder', { goods: this.buyGoods, price: this.payment })
+      this.timeId = setTimeout(() => {
+        this.$router.push({ name: 'order' })
+      }, 1500)
     }
+  },
+  beforeDestroy () {
+    this.timeId = null
   }
 }
 </script>
@@ -125,7 +139,7 @@ export default {
 <style scoped>
 
 .pay {
-  /* height: 812px; */
+  height: 100%;
   background-color: whitesmoke;
 }
 

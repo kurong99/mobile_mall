@@ -56,7 +56,7 @@ const router = new VueRouter({
     },
     { name: 'login', path: '/login', component: Login },
     { name: 'detail', path: '/detail/:id', component: Detail },
-    { path: '/order', component: Order },
+    { name: 'order', path: '/order', component: Order },
     { name: 'pay', path: '/pay', component: Pay },
     { name: 'search', path: '/search', component: Seach }
   ]

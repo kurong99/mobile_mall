@@ -2,7 +2,8 @@
   <div class="user">
     <header>
       <div class="left">
-        <van-icon size='50px' color='whitesmoke' name="user-circle-o" />
+        <van-icon size='50px' color='whitesmoke' name="user-circle-o" v-if="!$store.state.isLogin" />
+        <img class="avatar" :src="userInfo.avatar" alt="" v-else>
       </div>
       <div class="right" v-if="!$store.state.isLogin">
         <span class="login">未登录</span>
@@ -10,7 +11,7 @@
       </div>
       <div class="right" v-else>
         <span class="login">欢迎，尊敬的会员：</span>
-        <span class="login">{{ $route.query.username }}</span>
+        <span class="login">{{ userInfo.name || "---" }}</span>
       </div>
     </header>
     <div class="container">
@@ -18,19 +19,19 @@
         <van-grid>
           <div class="van-grid-item" style="flex-basis: 25%;">
             <div class="van-grid-item__content van-grid-item__content--center van-hairline">
-              <span class="van-grid-item__icon diy_item">453442343243</span>
+              <span class="van-grid-item__icon diy_item pos_center">{{ userInfo.balance || "---" }}</span>
               <span class="van-grid-item__text">账户余额</span>
             </div>
           </div>
           <div class="van-grid-item" style="flex-basis: 25%;">
             <div class="van-grid-item__content van-grid-item__content--center van-hairline">
-              <span class="van-grid-item__icon diy_item">453</span>
+              <span class="van-grid-item__icon diy_item pos_center">{{ userInfo.integral || "---" }}</span>
               <span class="van-grid-item__text">积分</span>
             </div>
           </div>
           <div class="van-grid-item" style="flex-basis: 25%;">
             <div class="van-grid-item__content van-grid-item__content--center van-hairline">
-              <span class="van-grid-item__icon diy_item">2</span>
+              <span class="van-grid-item__icon diy_item pos_center">{{ userInfo.coupon || "---" }}</span>
               <span class="van-grid-item__text">优惠券</span>
             </div>
           </div>
@@ -39,7 +40,7 @@
       </div>
       <div>
         <van-grid>
-          <van-grid-item icon="orders-o" text="全部订单" />
+          <van-grid-item icon="orders-o" text="全部订单" @click="toOrder" />
           <van-grid-item icon="pending-payment" text="待支付" />
           <van-grid-item icon="logistics" text="代发货" />
           <van-grid-item icon="sign" text="待收货" />
@@ -61,15 +62,32 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'UserIndex',
+  created () {
+    this.userInfo = this.info
+  },
   data () {
-    return {}
+    return {
+      userInfo: {}
+    }
   },
   methods: {
     login_handle () {
       this.$router.push({ path: '/login' })
+    },
+    toOrder () {
+      if (!this.isLogin) {
+        this.$toast('您还未登录，请先登录')
+      } else {
+        this.$router.push({ name: 'order' })
+      }
     }
+  },
+  computed: {
+    ...mapGetters(['info', 'isLogin'])
   }
 }
 </script>
@@ -95,7 +113,7 @@ header {
   height: 50px;
   float: left;
   background-color: rgb(199, 198, 196);
-  border-radius: 30px;
+  border-radius: 10px;
 }
 
 .right {
@@ -159,5 +177,14 @@ button {
 }
 .grid_item_color {
   color: orangered;
+}
+.pos_center {
+  text-align: center;
+}
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
 }
 </style>

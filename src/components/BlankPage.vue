@@ -14,6 +14,9 @@ export default {}
 </script>
 
 <style scoped>
+.blanks {
+  text-align: center;
+}
 .blanks_icon {
   margin-top: 30px;
 }
