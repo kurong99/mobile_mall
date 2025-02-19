@@ -1,0 +1,77 @@
+{
+    "productList": [
+        {
+            "id": 784884,
+            "title": "HUAWEI Mate 60 RS 非凡大师",
+            "img": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/launch/230925/phones/mate60-rs-ultimate-design-all.jpg",
+            "price": "11999",
+            "nums": 5357,
+            "desc": "革新技术，蕴含巧思；尖端工艺，探索极限，以科技勾勒纤薄，造就全球首个三折叠屏手机",
+            "count": 0
+        },
+        {
+            "id": 258459,
+            "title": "HUAWEI Mate X5",
+            "img": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/mate-x5/all-x5.jpg",
+            "price": 12499,
+            "nums": 3440,
+            "desc": "寰宇星门设计，凌厉线条与张力圆环结合，兼容并蓄，包容万象，于无边寰宇中无畏探索",
+            "count": 0
+            
+        },
+        {
+            "id": 984571,
+            "title": "HUAWEI Mate 60 Pro+",
+            "img": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/mate60-pro-plus/mate60-pro-plus-all.jpg",
+            "price": 8199,
+            "nums": 2218,
+            "desc": "丹青弧，一笔浓墨重彩，开启时代之作。纳米级金属双染工艺3，高端精致，浑然天成。",
+            "count": 0
+        },
+        {
+            "id": 456561,
+            "title": "HUAWEI Mate 60 Pro",
+            "img": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/mate60-pro-plus/mate60-pro-all.jpg",
+            "price": 5899,
+            "nums": 489,
+            "desc": "一直是经典，一向有新意。极致中轴对称，一脉相承。同心设计，突破边界，探索美学新生",
+            "count": 0
+        },
+        {
+            "id": 970685,
+            "title": "HUAWEI Pura 70",
+            "img": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/launch/ah/phones/ah-series-ah.jpg",
+            "price": 5199,
+            "nums": 7432,
+            "desc": "全新风向标设计，打破常规，突破定式，引领美学新风向。利落直屏，缤纷多色，各个都出彩。",
+            "count": 0
+        },
+        {
+            "id": 638281,
+            "title": "HUAWEI Pocket 2",
+            "img": "https://res.vmallres.com/pimages/uomcdn/CN/pms/202402/gbom/6942103113147/1440_1440_42FA5CDEADFA597609979D6910EB540Bmp.png",
+            "price": 6999,
+            "nums": 113,
+            "desc": "超平整超可靠，全焦段XMAGE四摄，紫外防晒检测",
+            "count": 0
+        },
+        {
+            "id": 983211,
+            "title": "HUAWEI Pura 90",
+            "img": "https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/launch/ah/phones/all-ah-ultra.jpg",
+            "price": 8199,
+            "nums": 7432,
+            "desc": "星芒纹，撷漫天星光，于手中绽放；高定刺绣压纹工艺，精细雅致，一触倾心。饰以专属 XMAGE 影像徽标，引领艺术新风向。",
+            "count": 0
+        },
+        {
+            "id": 240467,
+            "title": "HUAWEI nova 13 Pro",
+            "img": "https://res.vmallres.com/pimages/uomcdn/CN/pms/202410/gbom/6942103137129/800_800_CC8A9746DF24D6EA90EF9322630569DCmp.png",
+            "price": 3999,
+            "nums": 54,
+            "desc": "前后多焦段人像，AI修图，北斗卫星图片消息",
+            "count": 0
+        }
+    ]
+}
