@@ -13,26 +13,26 @@
       <button class="search_button" @click="search_handle">搜索</button>
     </div>
     <div class="search_content">
-      <div class="tips" v-if="!value">
+      <div class="tips" v-if="!isSearch">
         <span>最近搜索：</span>
-        <van-icon name="delete-o" />
+        <van-icon name="delete-o" @click="removeHistory" />
       </div>
       <div class="tips" v-else>
-        <span class="sort">综合</span>
-        <span class="sort">销量</span>
-        <span class="sort">价格</span>
+        <span class="sort" @click="sortBy(1)">综合<van-icon v-if="flag === 1" name="arrow-down" /></span>
+        <span class="sort" @click="sortBy(2)">销量<van-icon v-if="flag === 2" name="arrow-down" /></span>
+        <span class="sort" @click="sortBy(3)">价格<van-icon v-if="flag === 3" name="arrow-down" /></span>
       </div>
-      <div class="search_records" v-if="!value">
-        <div class="search_item" v-for="(item, index) in beforeValue" :key="index">{{ item }}</div>
+      <div class="search_records" v-if="!isSearch">
+        <div class="search_item" v-for="(item, index) in beforeValue" :key="index" @click="useHistory(item)">{{ item }}</div>
       </div>
       <div class="show_search" v-else>
-        <div class="goods" v-for="good in goods" :key="good.id">
+        <div class="goods" v-for="good in goods" :key="good.id" @click="toGoodDetail(good.id)">
             <div class="good_img">
-                <img :src="good.img" alt="#">
+                <img :src="good.imgs[0]" alt="#">
             </div>
             <div class="good_dec">
                 <p style="font-weight: 800">{{ good.title }}</p>
-                <p>{{ good.desc }}</p>
+                <!-- <p>{{ good.desc[0] }}</p> -->
                 <span class="nums">库存：{{ good.nums }}件</span>
                 <span class="price">￥{{ good.price }}</span>
             </div>
@@ -43,49 +43,72 @@
 </template>
 
 <script>
+import { httpPost } from '@/untils/request'
+
 export default {
   name: 'SearchIndex',
+  created () {
+    const searchHistory = localStorage.getItem('history')
+    if (searchHistory) {
+      this.beforeValue = JSON.parse(searchHistory)
+    }
+  },
   data () {
     return {
       value: '',
       isSearch: false,
       beforeValue: [],
-      goods: [
-        {
-          id: 1,
-          title: 'HUAWEI Mate 60 RS 非凡大师',
-          img: 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/launch/230925/phones/mate60-rs-ultimate-design-all.jpg',
-          price: 11999,
-          nums: 54354,
-          desc: '革新技术，蕴含巧思；尖端工艺，探索极限，以科技勾勒纤薄，造就全球首个三折叠屏手机⁠1。'
-        },
-        {
-          id: 2,
-          title: ' HUAWEI Mate X5',
-          img: 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/mate-x5/all-x5.jpg',
-          price: 5699,
-          nums: 11413,
-          desc: '寰宇星门设计，凌厉线条与张力圆环结合，兼容并蓄，包容万⁠象，于无边寰宇中无畏探⁠索'
-        },
-        {
-          id: 3,
-          title: ' HUAWEI Mate 60 Pro+',
-          img: 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/mate60-pro-plus/mate60-pro-plus-all.jpg',
-          price: 4199,
-          nums: 9990,
-          desc: '丹青弧，一笔浓墨重彩，开启时代之作。纳米级金属双染工艺⁠3，高端精致，浑然天成。'
-        }
-      ]
+      goods: [],
+      flag: 1
     }
   },
   methods: {
     onClickLeft () {
       this.$router.back()
     },
-    search_handle () {
-      const value = this.value
-      this.beforeValue.push(value)
-      this.beforeValue = Array.from(new Set(this.beforeValue))
+    async search_handle () {
+      this.isSearch = true
+      if (this.value) {
+        this.beforeValue.push(this.value)
+        this.beforeValue = Array.from(new Set(this.beforeValue))
+        localStorage.setItem('history', JSON.stringify(this.beforeValue), 7)
+      }
+      const response = await httpPost('/search', { word: this.value })
+      if (response.products.length === 0) {
+        // 展示默认
+        this.$toast('暂未识别到您搜索的商品，已为您显示上一次搜索内容')
+      } else {
+        this.goods = response.products
+      }
+      // 默认按综合排序
+      this.sortBy(1)
+    },
+    toGoodDetail (id) {
+      this.$router.push({ name: 'detail', params: { id } })
+    },
+    removeHistory () {
+      this.beforeValue = []
+      localStorage.setItem('history', [])
+    },
+    useHistory (item) {
+      this.value = item
+      this.search_handle()
+    },
+    // 商品排序
+    sortBy (num) {
+      this.flag = num
+      const map = new Map([[1, 'id'], [2, 'nums'], [3, 'price']])
+      this.goods.sort((a, b) => a[map.get(num)] - b[map.get(num)])
+    }
+  },
+  watch: {
+    value: {
+      handler (val) {
+        if (!val) {
+          this.isSearch = false
+        }
+        return val
+      }
     }
   }
 }
@@ -153,7 +176,7 @@ export default {
 }
 
 .good_img {
-    width: 130px;
+    width: 180px;
     height: 130px;
     padding: 8px;
 }
@@ -164,13 +187,13 @@ export default {
 }
 
 .good_dec {
-    width: 250px;
+    width: 200px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-.good_dec p {
+.good_dec p, span {
     width: inherit;
     padding: 8px;
     text-align: left;
